@@ -158,13 +158,16 @@ command_return = K_SPACE
 command_escape = K_ESCAPE
 
 class Maze:
-	def __init__(self, maze=[]):
+	def __init__(self):
 		# structure settings 
-		self.structure = maze
-		self.num_case = self.num_ligne = 0
+		self.maze_width = self.maze_length = 0
 		self.dot = 0
 		self.bonus_level = self.inky = self.shadow = self.pokey = self.speedy = False
 
+	def maze_scale(self):
+		self.maze_width = len(self.structure[0])
+		self.maze_length = len(self.structure)
+		
 	def read_file(self, file):
 		self.structure = []
 		# open the file
@@ -181,8 +184,11 @@ class Maze:
 						ligne_niveau.append(sprite)
 				# on ajoute la ligne à la liste du niveau
 				self.structure.append(ligne_niveau)
-		self.num_case = len(self.structure[0])
-		self.num_ligne = len(self.structure)
+		self.maze_scale()
+
+	def maze_editor(self, maze, window):
+		self.structure = maze
+		self.display_maze(window)
 
 	def display_maze(self, window):
 		global bonus
@@ -195,8 +201,8 @@ class Maze:
 		group_gum.empty()
 		group_bonus.empty()
 		self.dot = 0
-		self.num_case = len(self.structure[0])
-		self.num_ligne = len(self.structure)
+		self.maze_width = len(self.structure[0])
+		self.maze_length = len(self.structure)
 		# parcourt la liste du niveau
 		a = 0
 		for ligne in self.structure:
@@ -215,91 +221,7 @@ class Maze:
 					
 					wall = Sprite(x, y)
 
-					if b == self.num_case - 1 and a != 0 and a != self.num_ligne - 1:
-						if self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_m")
-
-						elif self.structure[a][b - 1] != "m" and self.structure[a + 1][b] != "m" and self.structure[a - 1][b] != "m":
-							wall.create_sprite("wall_i")
-
-						elif self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_d")
-						elif self.structure[a][b - 1] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_u")
-						elif self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_l")
-
-						elif self.structure[a][b - 1] == "m":
-							wall.create_sprite("wall_v")
-						elif self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_a")
-						elif self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_y")
-
-					elif b == 0 and a != 0 and a != self.num_ligne - 1:
-						if self.structure[a][b + 1] == "m" and self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_m")
-
-						elif self.structure[a][b + 1] != "m" and self.structure[a + 1][b] != "m" and self.structure[a - 1][b] != "m":
-							wall.create_sprite("wall_s")
-
-						elif self.structure[a][b + 1] == "m" and self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_d")
-						elif self.structure[a][b + 1] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_u")
-						elif self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_r")
-
-						elif self.structure[a][b + 1] == "m":
-							wall.create_sprite("wall_v")
-						elif self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_b")
-						elif self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_z")
-
-					elif a == 0 and b != 0 and b != self.num_case - 1:
-						if self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_m")
-
-						elif self.structure[a][b + 1] != "m" and self.structure[a][b - 1] != "m" and self.structure[a + 1][b] != "m":
-							wall.create_sprite("wall_q")
-
-						elif self.structure[a][b + 1] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_l")
-						elif self.structure[a][b - 1] == "m" and self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_r")
-						elif self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m":
-							wall.create_sprite("wall_d")
-						
-						elif self.structure[a][b + 1] == "m":
-							wall.create_sprite("wall_y")
-						elif self.structure[a + 1][b] == "m":
-							wall.create_sprite("wall_w")
-						elif self.structure[a][b - 1] == "m":
-							wall.create_sprite("wall_z")
-
-					elif a == self.num_ligne - 1 and b != 0 and b != self.num_case - 1:
-						if self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_m")
-
-						elif self.structure[a][b + 1] != "m" and self.structure[a][b - 1] != "m" and self.structure[a - 1][b] != "m":
-							wall.create_sprite("wall_p")
-
-						elif self.structure[a][b + 1] == "m" and self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_l")
-						elif self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_r")
-						elif self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m":
-							wall.create_sprite("wall_u")
-						
-						elif self.structure[a][b + 1] == "m":
-							wall.create_sprite("wall_a")
-						elif self.structure[a - 1][b] == "m":
-							wall.create_sprite("wall_w")
-						elif self.structure[a][b - 1] == "m":
-							wall.create_sprite("wall_b")
-
-					elif b != self.num_case - 1 and b != 0 and a != self.num_ligne-1 and a != 0:
+					if b != self.maze_width - 1 and b != 0 and a != self.maze_length-1 and a != 0:
 
 						if self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
 							wall.create_sprite("wall_m")
@@ -337,6 +259,90 @@ class Maze:
 						elif self.structure[a - 1][b] == "m":
 							wall.create_sprite("wall_q")
 					
+					elif b == self.maze_width - 1 and a != 0 and a != self.maze_length - 1:
+
+						if self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_m")
+						elif self.structure[a][b - 1] != "m" and self.structure[a + 1][b] != "m" and self.structure[a - 1][b] != "m":
+							wall.create_sprite("wall_i")
+
+						elif self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_d")
+						elif self.structure[a][b - 1] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_u")
+						elif self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_l")
+
+						elif self.structure[a][b - 1] == "m":
+							wall.create_sprite("wall_v")
+						elif self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_a")
+						elif self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_y")
+
+					elif b == 0 and a != 0 and a != self.maze_length - 1:
+						if self.structure[a][b + 1] == "m" and self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_m")
+
+						elif self.structure[a][b + 1] != "m" and self.structure[a + 1][b] != "m" and self.structure[a - 1][b] != "m":
+							wall.create_sprite("wall_s")
+
+						elif self.structure[a][b + 1] == "m" and self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_d")
+						elif self.structure[a][b + 1] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_u")
+						elif self.structure[a - 1][b] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_r")
+
+						elif self.structure[a][b + 1] == "m":
+							wall.create_sprite("wall_v")
+						elif self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_b")
+						elif self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_z")
+
+					elif a == 0 and b != 0 and b != self.maze_width - 1:
+						if self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_m")
+
+						elif self.structure[a][b + 1] != "m" and self.structure[a][b - 1] != "m" and self.structure[a + 1][b] != "m":
+							wall.create_sprite("wall_q")
+
+						elif self.structure[a][b + 1] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_l")
+						elif self.structure[a][b - 1] == "m" and self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_r")
+						elif self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m":
+							wall.create_sprite("wall_d")
+						
+						elif self.structure[a][b + 1] == "m":
+							wall.create_sprite("wall_y")
+						elif self.structure[a + 1][b] == "m":
+							wall.create_sprite("wall_w")
+						elif self.structure[a][b - 1] == "m":
+							wall.create_sprite("wall_z")
+
+					elif a == self.maze_length - 1 and b != 0 and b != self.maze_width - 1:
+						if self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_m")
+
+						elif self.structure[a][b + 1] != "m" and self.structure[a][b - 1] != "m" and self.structure[a - 1][b] != "m":
+							wall.create_sprite("wall_p")
+
+						elif self.structure[a][b + 1] == "m" and self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_l")
+						elif self.structure[a][b - 1] == "m" and self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_r")
+						elif self.structure[a][b + 1] == "m" and self.structure[a][b - 1] == "m":
+							wall.create_sprite("wall_u")
+						
+						elif self.structure[a][b + 1] == "m":
+							wall.create_sprite("wall_a")
+						elif self.structure[a - 1][b] == "m":
+							wall.create_sprite("wall_w")
+						elif self.structure[a][b - 1] == "m":
+							wall.create_sprite("wall_b")
+
 					elif a == 0 and b == 0:
 						if self.structure[a + 1][b] == "m" and self.structure[a][b + 1] == "m":
 							wall.create_sprite("wall_m")
@@ -347,7 +353,7 @@ class Maze:
 						elif self.structure[a + 1][b] != "m" and self.structure[a][b + 1] == "m":
 							wall.create_sprite("wall_d")
 
-					elif a == self.num_ligne-1 and b == 0:
+					elif a == self.maze_length-1 and b == 0:
 						if self.structure[a - 1][b] == "m" and self.structure[a][b + 1] == "m":
 							wall.create_sprite("wall_m")
 						elif self.structure[a - 1][b] != "m" and self.structure[a][b + 1] != "m":
@@ -357,7 +363,7 @@ class Maze:
 						elif self.structure[a - 1][b] != "m" and self.structure[a][b + 1] == "m":
 							wall.create_sprite("wall_u")
 
-					elif a == 0 and b == self.num_case-1:
+					elif a == 0 and b == self.maze_width-1:
 						if self.structure[a + 1][b] == "m" and self.structure[a][b - 1] == "m":
 							wall.create_sprite("wall_m")
 						elif self.structure[a + 1][b] != "m" and self.structure[a][b - 1] != "m":
@@ -367,7 +373,7 @@ class Maze:
 						elif self.structure[a + 1][b] != "m" and self.structure[a][b - 1] == "m":
 							wall.create_sprite("wall_d")
 
-					elif a == self.num_ligne-1 and b == self.num_case-1:
+					elif a == self.maze_length-1 and b == self.maze_width-1:
 						if self.structure[a - 1][b] == "m" and self.structure[a][b - 1] == "m":
 							wall.create_sprite("wall_m")
 						elif self.structure[a - 1][b] != "m" and self.structure[a][b - 1] != "m":
@@ -425,13 +431,13 @@ class Maze:
 					group_dot.add(dot)
 					# calcul du nombre de point
 					self.dot += 1
-					if b != self.num_case - 1:
+					if b != self.maze_width - 1:
 						if self.structure[a][b + 1] == "*" or self.structure[a][b + 1] == "g":
 							dot = Sprite(x + 16, y)
 							dot.create_sprite("dot")
 							group_dot.add(dot)
 							self.dot += 1
-					if a != self.num_ligne - 1:
+					if a != self.maze_length - 1:
 						if self.structure[a + 1][b] == "*" or self.structure[a + 1][b] == "g":
 							dot = Sprite(x, y + 16)
 							dot.create_sprite("dot")
@@ -697,10 +703,10 @@ class Pac:
 	def moove(self, direction):
 		# moove right
 		if direction == "right":
-			if self.screen_x >= (niveau.num_case - 1) * 32:
+			if self.screen_x >= (niveau.maze_width - 1) * 32:
 				self.rect = pygame.Rect(0, self.screen_y, 32, 32)
 				if pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None:
-					if self.screen_x >= niveau.num_case * 32 - self.speed:
+					if self.screen_x >= niveau.maze_width * 32 - self.speed:
 						self.screen_x = -32 + self.speed
 					else:
 						self.screen_x += self.speed
@@ -712,10 +718,10 @@ class Pac:
 
 		# moove down
 		elif direction == "down":
-			if self.screen_y >= (niveau.num_ligne - 1) * 32:
+			if self.screen_y >= (niveau.maze_length - 1) * 32:
 				self.rect = pygame.Rect(self.screen_x, 0, 32, 32)
 				if pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None:
-					if self.screen_y >= niveau.num_ligne * 32  - self.speed:
+					if self.screen_y >= niveau.maze_length * 32  - self.speed:
 						self.screen_y = -32 + self.speed
 					else:
 						self.screen_y += self.speed
@@ -728,10 +734,10 @@ class Pac:
 		# moove left
 		elif direction == "left":
 			if self.screen_x <= 0:
-				self.rect = pygame.Rect((niveau.num_case - 1) * 32, self.screen_y, 32, 32)
+				self.rect = pygame.Rect((niveau.maze_width - 1) * 32, self.screen_y, 32, 32)
 				if pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None:
 					if self.screen_x <= -32 + self.speed:
-						self.screen_x = niveau.num_case * 32 - self.speed
+						self.screen_x = niveau.maze_width * 32 - self.speed
 					else:
 						self.screen_x -= self.speed
 			else:
@@ -743,10 +749,10 @@ class Pac:
 		# moove up
 		elif direction == "up":
 			if self.screen_y <= 0:
-				self.rect = pygame.Rect(self.screen_x, (niveau.num_ligne - 1) * 32, 32, 32)
+				self.rect = pygame.Rect(self.screen_x, (niveau.maze_length - 1) * 32, 32, 32)
 				if pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None:
 					if self.screen_y <= -32 + self.speed:
-						self.screen_y = niveau.num_ligne * 32 - self.speed
+						self.screen_y = niveau.maze_length * 32 - self.speed
 					else:
 						self.screen_y -= self.speed
 			else:
@@ -815,7 +821,7 @@ class Pac:
 
 	def display_life(self):
 		for life in range(0, self.life-1):
-			self.window.blit(self.image_list[1], (0 + life * 32, (niveau.num_ligne-1)*32+2))
+			self.window.blit(self.image_list[1], (0 + life * 32, (niveau.maze_length-1)*32+2))
 
 	def display_character(self):
 		self.window.blit(self.image, (self.screen_x, self.screen_y))
@@ -871,11 +877,11 @@ class Ghost:
 		# moove right
 		elif direction == "right":
 			self.rect = pygame.Rect(0, self.screen_y, 32, 32)
-			if pygame.sprite.spritecollideany(self, group_wall) != None and self.screen_x >= (niveau.num_case - 1) * 32 and self.screen_y % 32 == 0:
+			if pygame.sprite.spritecollideany(self, group_wall) != None and self.screen_x >= (niveau.maze_width - 1) * 32 and self.screen_y % 32 == 0:
 				self.left = True
 				self.ia("left")
-			elif pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None and self.screen_x >= (niveau.num_case - 1) * 32 and self.screen_y % 32 == 0:
-				if self.screen_x >= (niveau.num_case * 32) - self.speed:
+			elif pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None and self.screen_x >= (niveau.maze_width - 1) * 32 and self.screen_y % 32 == 0:
+				if self.screen_x >= (niveau.maze_width * 32) - self.speed:
 					self.screen_x = -32 + self.speed
 				else:
 					self.screen_x += self.speed
@@ -902,13 +908,13 @@ class Ghost:
 
 		# left
 		elif direction == "left":
-			self.rect = pygame.Rect((niveau.num_case - 1) * 32, self.screen_y, 32, 32)
+			self.rect = pygame.Rect((niveau.maze_width - 1) * 32, self.screen_y, 32, 32)
 			if pygame.sprite.spritecollideany(self, group_wall) != None and self.screen_x <= 0 and self.screen_y % 32 == 0:
 				self.right = True
 				self.ia("right")
 			elif pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None and self.screen_x <= 0 and self.screen_y % 32 == 0:
 				if self.screen_x <= -32 + self.speed:
-					self.screen_x = (niveau.num_case * 32) - self.speed
+					self.screen_x = (niveau.maze_width * 32) - self.speed
 				else:
 					self.screen_x -= self.speed
 
@@ -934,13 +940,13 @@ class Ghost:
 
 		# up
 		elif direction == "up":
-			self.rect = pygame.Rect(self.screen_x, (niveau.num_ligne - 1) * 32, 32, 32)
+			self.rect = pygame.Rect(self.screen_x, (niveau.maze_length - 1) * 32, 32, 32)
 			if pygame.sprite.spritecollideany(self, group_wall) != None and self.screen_y <= 0 and self.screen_x % 32 == 0:
 				self.down = True
 				self.ia("down")
 			elif pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None and self.screen_y <= 0 and self.screen_x % 32 == 0:
 				if self.screen_y <= -32 + self.speed:
-					self.screen_y = niveau.num_ligne * 32 - self.speed
+					self.screen_y = niveau.maze_length * 32 - self.speed
 				else:
 					self.screen_y -= self.speed
 
@@ -967,11 +973,11 @@ class Ghost:
 		# down
 		elif direction == "down":
 			self.rect = pygame.Rect(self.screen_x, 0, 32, 32)
-			if pygame.sprite.spritecollideany(self, group_wall) != None and self.screen_y >= (niveau.num_ligne - 1) * 32 and self.screen_x % 32 == 0:
+			if pygame.sprite.spritecollideany(self, group_wall) != None and self.screen_y >= (niveau.maze_length - 1) * 32 and self.screen_x % 32 == 0:
 				self.up = True
 				self.ia("up")
-			elif pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None and self.screen_y >= (niveau.num_ligne - 1) * 32 and self.screen_x % 32 == 0:
-				if self.screen_y >= niveau.num_ligne * 32 - self.speed:
+			elif pygame.sprite.spritecollideany(self, group_wall) == pygame.sprite.spritecollideany(self, group_wall_spawn) == None and self.screen_y >= (niveau.maze_length - 1) * 32 and self.screen_x % 32 == 0:
+				if self.screen_y >= niveau.maze_length * 32 - self.speed:
 					self.screen_y = -32 + self.speed
 				else:
 					self.screen_y += self.speed
@@ -1462,7 +1468,7 @@ def level_start():
 	niveau = Maze()
 	niveau.read_file(level_file)
 	# ouverture de la fenêtre Pygame
-	window = pygame.display.set_mode((niveau.num_case * 32, niveau.num_ligne * 32))
+	window = pygame.display.set_mode((niveau.maze_width * 32, niveau.maze_length * 32))
 	niveau.display_maze(window)
 	# text hiscore
 	text_game_HISCORE = font_8.render("high-score " + file_hiscore_score[0], 0, WHITE)
@@ -1813,8 +1819,8 @@ def menu_pause():
 		pygame.time.Clock().tick(15)
 
 # pas fini genre vraiment
-def level_editor(x=30, y=30):
-	window = pygame.display.set_mode((x * 32 + 64, y * 32))
+def level_editor(x=20, y=20):
+	window = pygame.display.set_mode((x * 32, y * 32))
 	wall = "0"
 	maze = []
 	while y:
@@ -1825,15 +1831,10 @@ def level_editor(x=30, y=30):
 			z -= 1
 			ligne.append("0")
 		maze.append(ligne)
-	niveau = Maze(maze)
+	niveau = Maze()
 
 	loop = True
 	while loop:
-		if pygame.mouse.get_focused():
-			x, y = pygame.mouse.get_pos()
-			x = int(x / 32)
-			y = int(y / 32)
-			window.fill((30, 30, 30), (x * 32, y * 32, 32, 32))
 			
 		for event in pygame.event.get():
 			if event.type == QUIT:
@@ -1892,6 +1893,11 @@ def level_editor(x=30, y=30):
 			maze[y][x] = " "
 		
 		window.fill(BLACK)
+		if pygame.mouse.get_focused():
+			x, y = pygame.mouse.get_pos()
+			x = int(x / 32)
+			y = int(y / 32)
+			window.fill((30, 30, 30), (x * 32, y * 32, 32, 32))
 		niveau.display_maze(window)
 		group_wall.draw(window)
 		group_wall_spawn.draw(window)
