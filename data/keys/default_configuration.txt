@@ -1,0 +1,6 @@
+K_z
+K_s
+K_d
+K_q
+K_RETURN
+K_ESCAPE
