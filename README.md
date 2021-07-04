@@ -11,5 +11,7 @@ I have a massed up organisation but here all the thing I made by far : \
 - Smouth player control (I hope you understande what I'm thinking by "smouth")
 - Basic IA for each ghost (Not balanced)
 - Add data for hi-score
-- add a leaderboard menu
+- Add a leaderboard menu
+- Try to make a menu
+- Add 5 different maze
 - And plenty of other thing that don't really matters
